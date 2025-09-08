@@ -19,8 +19,6 @@ class FbrInvoiceController extends Controller
         
         $apiUrl = "https://gw.fbr.gov.pk/di_data/v1/di/postinvoicedata_sb"; 
         $apiKey = env('apiKey'); 
-        dd($apiKey);// Store API key in .env file
-
         if($invoice->registration_type === "Registered"){
             $payload = [
                 'invoiceType' => $invoice->invoice_type,
