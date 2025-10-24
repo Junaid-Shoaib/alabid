@@ -112,5 +112,40 @@
 });
 
 </script>
+<script>
+function handleInvoicePost(event, button) {
+    event.preventDefault(); // stop normal redirect
+
+    if (!confirm("Are you sure you want to post this Invoice?")) {
+        return false;
+    }
+
+    // Disable button instantly
+    button.disabled = true;
+    button.style.pointerEvents = 'none';
+    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Posting...';
+
+    // Redirect to the posting route
+    window.location.href = button.getAttribute('href');
+}
+
+$(document).on('click', '.post-btn', function (e) {
+    e.preventDefault();
+    const button = this;
+
+    if (!confirm("Are you sure you want to post this Invoice?")) {
+        return false;
+    }
+
+    // Disable click and show spinner
+    $(button)
+        .prop('disabled', true)
+        .css('pointer-events', 'none')
+        .html('<i class="fas fa-spinner fa-spin"></i> Posting...');
+
+    // Redirect to posting URL
+    window.location.href = $(button).attr('href');
+});
+</script>
 @endpush
 @endsection

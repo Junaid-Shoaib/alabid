@@ -57,8 +57,8 @@ class InvoiceController extends Controller
                             </button>
                         </form> 
                             <a href="' . route('invoices.posting', $row->id) . '" 
-                                class="btn btn-sm btn-outline-primary ml-2" 
-                                onclick="return confirm(`Are you sure you want to post this Invoice?`)">
+                                class="btn btn-sm btn-outline-primary ml-2 post-btn"
+                                onclick="return handleInvoicePost(event, this)">
                                 <i class="fas fa-upload"></i> Invoice Post
                             </a>';
                     };
