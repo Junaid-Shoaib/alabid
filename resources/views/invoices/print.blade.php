@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Invoice {{ $invoice->invoice_no }}</title>
-    <style>
+     <style>
         body {
             font-family: sans-serif;
             font-size: 14px;
@@ -15,17 +15,15 @@
         table {
             width: 100%;
             border-collapse: collapse;
-        }
-
-       
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 6px;
-            text-align: left;
-            font-size: 11px;
+            table-layout: auto;   /*  <-- was missing */
             word-wrap: break-word;
-       
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: left;
+            font-size: 10px;
+            white-space: normal;  /* allow wrapping */
         }
 
         .no-border td {
@@ -93,6 +91,8 @@
             font-family: sans-serif;
             font-size: 12px;
         }
+
+        .desc-cell { word-break: break-word; }
     </style>
 </head>
 
@@ -162,20 +162,20 @@
     <table>
         <thead>
             <tr>
-                <th style="width: 6%;">H.S. Code</th>
-                <th style="width: 15%;">Description of Goods</th>
-                <th style="width: 9%;">Invoice Type</th>
-                <th style="width: 9%;">Sale Type</th>
-                <th style="width: 5%;">UOM</th>
-                <th style="width: 5%;">Unit Price</th>
-                <th style="width: 6%;">Qty</th>
-                <th style="width: 10%;">Value (Excl. ST)</th>
-                <th style="width: 6%;">Rate</th>
-                <th style="width: 10%;">Sales Tax/FED</th>
-                <th style="width: 8%;">ST WH</th>
-                <th style="width: 6%;">Extra Tax</th>
-                <th style="width: 6%;">Further Tax</th>
-                <th style="width: 10%;">Total</th>
+                <th class="desc-cell">H.S. Code</th>
+                <th class="desc-cell">Description of Goods</th>
+                <th class="desc-cell">Invoice Type</th>
+                <th class="desc-cell">Sale Type</th>
+                <th class="desc-cell">UOM</th>
+                <th class="desc-cell">Unit Price</th>
+                <th class="desc-cell">Qty</th>
+                <th class="desc-cell">Value (Excl. ST)</th>
+                <th class="desc-cell">Rate</th>
+                <th class="desc-cell">Sales Tax/FED</th>
+                <th class="desc-cell">ST WH</th>
+                <th class="desc-cell">Extra Tax</th>
+                <th class="desc-cell">Further Tax</th>
+                <th class="desc-cell">Total</th>
             </tr>
         </thead>
         <tbody>
