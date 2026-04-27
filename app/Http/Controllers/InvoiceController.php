@@ -56,11 +56,13 @@ class InvoiceController extends Controller
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </form> 
-                            <a href="' . route('invoices.posting', $row->id) . '" 
-                                class="btn btn-sm btn-outline-primary ml-2 post-btn"
-                                onclick="return handleInvoicePost(event, this)">
+                        <form action="' . route('invoices.posting', $row->id) . '" method="POST"
+                            style="display:inline-block;" class="fbr-post-form">
+                            ' . csrf_field() . '
+                            <button type="submit" class="btn btn-sm btn-outline-primary post-btn">
                                 <i class="fas fa-upload"></i> Invoice Post
-                            </a>';
+                            </button>
+                        </form>';
                     };
                     $btn .= '
             			<a href="' . route('invoices.print', $row->id) . '" class="btn btn-sm btn-outline-primary" target="_blank">
@@ -159,7 +161,7 @@ class InvoiceController extends Controller
         $request->validate([
             'customer_id' => 'required',
             'registration_type' => 'required',
-            'date_of_supply' => 'required|date',
+	        'date_of_supply' => 'required|date',
             'time_of_supply' => 'required',
             'items' => 'required|array',
             'items.*.hs_code' => 'required',
@@ -167,7 +169,7 @@ class InvoiceController extends Controller
             'items.*.uom' => 'required',
             'items.*.description' => 'required',
             'items.*.unit_price' => 'required|numeric',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:1',
             'items.*.value_of_goods' => 'required|numeric',
             'items.*.sale_tax_rate' => 'required|numeric',
             'items.*.amount_of_saleTax' => 'required|numeric',
@@ -176,14 +178,21 @@ class InvoiceController extends Controller
             'items.*.total' => 'required|numeric',
         ]);
 
-        $prefix = now()->format('Ym');
+       $prefix = now()->format('Ym');
 
-        $count = Invoice::where('invoice_no', 'LIKE', "{$prefix}-%")->count();
+        // last invoice with same prefix
+        $lastInvoice = Invoice::where('invoice_no', 'LIKE', "{$prefix}-%")
+            ->orderBy('invoice_no', 'desc')
+            ->first();
 
-        $nextNumber = str_pad($count + 1, 3, '0', STR_PAD_LEFT);
+        if ($lastInvoice) {
+            $lastNumber = (int) substr($lastInvoice->invoice_no, -3);
+            $nextNumber = str_pad($lastNumber + 1, 3, '0', STR_PAD_LEFT);
+        } else {
+            $nextNumber = '001';
+        }
 
         $invoiceNo = "{$prefix}-{$nextNumber}";
-
 
         $invoice = Invoice::create([
             'customer_id' => $request->customer_id,
@@ -222,7 +231,7 @@ class InvoiceController extends Controller
             'items.*.uom' => 'required',
             'items.*.description' => 'required',
             'items.*.unit_price' => 'required|numeric',
-            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.quantity' => 'required|numeric|min:1',
             'items.*.value_of_goods' => 'required|numeric',
             'items.*.sale_tax_rate' => 'required|numeric',
             'items.*.amount_of_saleTax' => 'required|numeric',
@@ -232,11 +241,11 @@ class InvoiceController extends Controller
         ]);
 
 
-        $invoice->update([
+       $invoice->update([
             'customer_id' => $request->customer_id,
             'registration_type' => $request->registration_type,
             'date_of_supply' => $request->date_of_supply,
-            'time_of_supply' => $request->time_of_supply,
+           'time_of_supply' => $request->time_of_supply,
         ]);
 
         $invoice->items()->delete(); // remove all old items
@@ -270,6 +279,7 @@ class InvoiceController extends Controller
         $invoice->load('customer', 'items');
         $isPdf = true;
         $pdf = PDF::loadView('invoices.print', compact('invoice','isPdf'));
+        // $pdf = PDF::loadView('invoices.print', compact('invoice','isPdf'));
         return $pdf->download('invoice_' . $invoice->invoice_no . '.pdf');
     }   
 }

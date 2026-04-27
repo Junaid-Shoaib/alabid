@@ -35,7 +35,8 @@ Route::get('/invoices/export-pdf', [InvoiceController::class, 'exportPdf'])->nam
 Route::resource('customers', CustomerController::class)->middleware('auth');
 Route::resource('items', ItemController::class)->middleware('auth');;
 Route::resource('invoices', InvoiceController::class)->middleware('auth');;
-Route::get('/invoices/posting/{invoice}', [FbrInvoiceController::class, 'posting'])->name('invoices.posting');
+// Route::get('/invoices/posting/{invoice}', [FbrInvoiceController::class, 'posting'])->name('invoices.posting');
+Route::post('/invoices/{invoice}/posting', [FbrInvoiceController::class, 'posting'])->name('invoices.posting');
 Route::get('/invoices/{invoice}/print', [InvoiceController::class, 'print'])->name('invoices.print');
 Route::get('/invoices/{invoice}/pdf', [InvoiceController::class, 'pdf'])->name('invoices.pdf');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
